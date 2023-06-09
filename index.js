@@ -30,7 +30,11 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
      client.connect();
 
+<<<<<<< HEAD
      const classCollection = client.db('kitchenChamp').collection('class');
+=======
+    const classCollections = client.db('kitchenChamp').collection('class');
+>>>>>>> 5262a66 (initial setup)
 
      const usersCollection = client.db('kitchenChamp').collection('users');
 
@@ -43,7 +47,17 @@ async function run() {
         res.send(result);
     })
 
+    
 
+<<<<<<< HEAD
+=======
+   app.get('/class', async(req,res) => {
+    const cursor = classCollections.find();
+    const result = await cursor.toArray();
+    res.send(result);
+})
+
+>>>>>>> 5262a66 (initial setup)
 
 
 
