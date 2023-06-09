@@ -32,7 +32,7 @@ async function run() {
 
      const classCollection = client.db('kitchenChamp').collection('class');
 
-     const usersCollection = client.db('KitchenChamp').collection('users');
+     const usersCollection = client.db('kitchenChamp').collection('users');
 
      
 
