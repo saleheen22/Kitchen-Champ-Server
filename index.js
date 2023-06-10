@@ -169,20 +169,7 @@ async function run() {
       }) 
 
 
-      app.patch('/users/student/:id',  async (req, res) => {
-        const id = req.params.id;
-        console.log(id);
-        const filter = { _id: new ObjectId(id) };
-        const updateDoc = {
-          $set: {
-            role: 'student'
-          },
-        };
-  
-        const result = await usersCollection.updateOne(filter, updateDoc);
-        res.send(result);
-  
-      }) 
+ 
 
 
 
