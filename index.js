@@ -97,27 +97,27 @@ async function run() {
     }
 
     //getting data
+    // app.get('/class', async (req, res) => {
+    //   const cursor = classCollection.find();
+    //   const result = await cursor.toArray();
+    //   res.send(result);
+    // })
+
+    // users apis
+    app.get('/users', verifyJWT,   async (req, res) => {
+      const cursor = usersCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
     app.get('/class', async (req, res) => {
       const cursor = classCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     })
 
-    // users apis
-    app.get('/users', verifyJWT, verifyAdmin,  async (req, res) => {
-      const cursor = usersCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
-    })
-
-    app.get('/class', verifyJWT, verifyAdmin,  async (req, res) => {
-      const cursor = classCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
-    })
-
     //update the class status
-    app.patch('/class/approve/:id', verifyJWT, verifyAdmin,  async (req, res) => {
+    app.patch('/class/checking/:id',  async (req, res) => {
       const id = req.params.id;
       console.log(req.params.query);
       const filter = { _id: new ObjectId(id) };
@@ -215,7 +215,7 @@ async function run() {
       })
 
       //update the user role
-      app.patch('/users/admin/:id', verifyJWT, verifyAdmin, async (req, res) => {
+      app.patch('/users/admin/:id',  async (req, res) => {
         const id = req.params.id;
         console.log(id);
         const filter = { _id: new ObjectId(id) };
@@ -231,7 +231,7 @@ async function run() {
   
       })  
 
-      app.patch('/users/instructor/:id', verifyJWT, verifyAdmin, async (req, res) => {
+      app.patch('/users/instructor/:id', async (req, res) => {
         const id = req.params.id;
         console.log(id);
         const filter = { _id: new ObjectId(id) };
@@ -319,7 +319,7 @@ async function run() {
       })  
 
 
-      app.get('/myclass', verifyJWT, verifyInstructor,  async (req, res) => {
+      app.get('/myclass', async (req, res) => {
         let query = {};
         if (req.query?.email) {
             query = { email: req.query.email }
