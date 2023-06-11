@@ -116,12 +116,43 @@ async function run() {
       res.send(result);
     })
 
+    //update the class status
+    app.patch('/class/approve/:id',  async (req, res) => {
+      const id = req.params.id;
+      console.log(req.params.query);
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          Status: 'Approved'
+        },
+      };
+
+      const result = await classCollection.updateOne(filter, updateDoc);
+      res.send(result);
+
+    })  
+
+    app.patch('/class/deny/:id',  async (req, res) => {
+      const id = req.params.id;
+      console.log(req.params.query);
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          Status: 'Denied'
+        },
+      };
+
+      const result = await classCollection.updateOne(filter, updateDoc);
+      res.send(result);
+
+    }) 
+
 
 
 
     app.post('/users', async (req, res) => {
       var user = req.body;
-      user.role = 'student';
+      user.role = 'Student';
 
       const query = { email: user.email }
       const existingUser = await usersCollection.findOne(query);
