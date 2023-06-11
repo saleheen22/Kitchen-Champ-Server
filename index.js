@@ -147,6 +147,31 @@ async function run() {
 
     }) 
 
+    app.patch('/class/feedback/:id',  async (req, res) => {
+      const id = req.params.id;
+     const body =  req.body;
+     const text = body.feedback;
+     
+
+     
+      
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          Feedback: text
+        },
+      };
+
+      const result = await classCollection.updateOne(filter, updateDoc);
+      res.send(result);
+
+    }) 
+
+   
+
+
+ 
+
 
 
 
