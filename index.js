@@ -50,9 +50,12 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     client.connect();
 
+    // all the collection name
+
     const classCollection = client.db('kitchenChamp').collection('class');
 
     const usersCollection = client.db('kitchenChamp').collection('users');
+
 
 
 
@@ -67,7 +70,7 @@ async function run() {
       const email = req.decoded.email;
       const query = { email: email }
       const user = await usersCollection.findOne(query);
-      if (user?.role !== 'admin') {
+      if (user?.role !== 'Admin') {
         return res.status(403).send({ error: true, message: 'forbidden message' });
       }
       next();
@@ -77,7 +80,7 @@ async function run() {
       const email = req.decoded.email;
       const query = { email: email }
       const user = await usersCollection.findOne(query);
-      if (user?.role !== 'instructor') {
+      if (user?.role !== 'Instructor') {
         return res.status(403).send({ error: true, message: 'forbidden message' });
       }
       next();
@@ -87,7 +90,7 @@ async function run() {
       const email = req.decoded.email;
       const query = { email: email }
       const user = await usersCollection.findOne(query);
-      if (user?.role !== 'student') {
+      if (user?.role !== 'Student') {
         return res.status(403).send({ error: true, message: 'forbidden message' });
       }
       next();
@@ -101,7 +104,7 @@ async function run() {
     })
 
     // users apis
-    app.get('/users', verifyJWT, async (req, res) => {
+    app.get('/users', verifyJWT, verifyAdmin,  async (req, res) => {
       const cursor = usersCollection.find();
       const result = await cursor.toArray();
       res.send(result);
@@ -232,6 +235,14 @@ async function run() {
         res.send(result);
       })
 
+
+
+      // adding class by instructor
+      app.post('/addclass', verifyJWT, verifyInstructor, async (req, res) => {
+        const newClass = req.body;
+        const result = await classCollection.insertOne(newClass)
+        res.send(result);
+      })  
 
  
 
