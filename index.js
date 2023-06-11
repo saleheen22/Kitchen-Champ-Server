@@ -110,6 +110,14 @@ async function run() {
       res.send(result);
     })
 
+    app.get('/class', verifyJWT, verifyAdmin,  async (req, res) => {
+      const cursor = classCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+
+
 
     app.post('/users', async (req, res) => {
       var user = req.body;
@@ -124,6 +132,13 @@ async function run() {
       const result = await usersCollection.insertOne(user);
       res.send(result);
     });
+
+
+
+
+
+
+
 
 
        //admin related
@@ -243,6 +258,9 @@ async function run() {
         const result = await classCollection.insertOne(newClass)
         res.send(result);
       })  
+
+
+     
 
  
 
