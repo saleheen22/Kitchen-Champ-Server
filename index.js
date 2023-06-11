@@ -202,6 +202,37 @@ async function run() {
       // })
 
 
+
+      app.get('/users/inst/:email', verifyJWT, async (req, res) => {
+        const email = req.params.email;
+  
+        if (req.decoded.email !== email) {
+          res.send({ inst: false })
+        }
+  
+        const query = { email: email }
+        const user = await usersCollection.findOne(query);
+        const result = { inst: user?.role === 'Instructor' }
+        res.send(result);
+      })
+
+
+      app.get('/users/student/:email', verifyJWT, async (req, res) => {
+        const email = req.params.email;
+  
+        if (req.decoded.email !== email) {
+          res.send({ student: false })
+        }
+  
+        const query = { email: email }
+        const user = await usersCollection.findOne(query);
+        const result = { student: user?.role === "Student" }
+
+        
+        res.send(result);
+      })
+
+
  
 
 
