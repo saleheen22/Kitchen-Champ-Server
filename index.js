@@ -108,7 +108,7 @@ async function run() {
     })
 
 
-    app.post('/users', verifyJWT, verifyAdmin, async (req, res) => {
+    app.post('/users', async (req, res) => {
       var user = req.body;
       user.role = 'student';
 
@@ -133,7 +133,7 @@ async function run() {
   
         const query = { email: email }
         const user = await usersCollection.findOne(query);
-        const result = { admin: user?.role === 'admin' }
+        const result = { admin: user?.role === 'Admin' }
         res.send(result);
       })
 
@@ -144,7 +144,8 @@ async function run() {
         const filter = { _id: new ObjectId(id) };
         const updateDoc = {
           $set: {
-            role: 'admin'
+            role: 'Admin',
+            isAdminClicked: true,
           },
         };
   
@@ -159,7 +160,8 @@ async function run() {
         const filter = { _id: new ObjectId(id) };
         const updateDoc = {
           $set: {
-            role: 'instructor'
+            role: 'Instructor',
+            isInstClicked: true,
           },
         };
   
@@ -167,6 +169,37 @@ async function run() {
         res.send(result);
   
       }) 
+
+      // app.patch('/users/adminClk/:id',  async (req, res) => {
+      //   const id = req.params.id;
+      //   console.log(id);
+      //   const filter = { _id: new ObjectId(id) };
+      //   const updateDoc = {
+      //     $set: {
+      //       isAdminClicked: false,
+      //     },
+      //   };
+  
+      //   const result = await usersCollection.updateOne(filter, updateDoc);
+      //   res.send(result);
+  
+      // }) 
+
+
+      // app.patch('/users/instClk/:id',  async (req, res) => {
+      //   const id = req.params.id;
+      //   console.log(id);
+      //   const filter = { _id: new ObjectId(id) };
+      //   const updateDoc = {
+      //     $set: {
+      //       isAdminClicked: true,
+      //     },
+      //   };
+  
+      //   const result = await usersCollection.updateOne(filter, updateDoc);
+      //   res.send(result);
+  
+      // })
 
 
  
