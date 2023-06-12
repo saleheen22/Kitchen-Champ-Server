@@ -110,8 +110,21 @@ async function run() {
       res.send(result);
     })
 
+    app.get('/allusers',  async (req, res) => {
+      const cursor = usersCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
     app.get('/class', async (req, res) => {
       const cursor = classCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    app.get('/class/approve', async (req, res) => {
+      let query = { Status : 'Approved'}
+      const cursor = classCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
     })
@@ -328,6 +341,23 @@ async function run() {
         const result = await cursor.toArray();
         res.send(result);
       })
+
+
+
+
+      
+
+
+      app.get('/instructors1', async(req, res) => {
+        let query = { role: 'Instructor' };
+
+        const cursor = usersCollection.find(query);
+        const result = await cursor.toArray();
+        res.send(result);
+      })
+
+
+      
 
 
      
