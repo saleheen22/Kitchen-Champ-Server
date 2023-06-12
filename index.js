@@ -62,7 +62,7 @@ async function run() {
     const paymentCollection = client.db("kitchenChamp").collection("payments");
 
 
-    
+
 
 
 
@@ -112,13 +112,13 @@ async function run() {
     // })
 
     // users apis
-    app.get('/users', verifyJWT,   async (req, res) => {
+    app.get('/users', verifyJWT, async (req, res) => {
       const cursor = usersCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     })
 
-    app.get('/allusers',  async (req, res) => {
+    app.get('/allusers', async (req, res) => {
       const cursor = usersCollection.find();
       const result = await cursor.toArray();
       res.send(result);
@@ -131,14 +131,14 @@ async function run() {
     })
 
     app.get('/class/approve', async (req, res) => {
-      let query = { Status : 'Approved'}
+      let query = { Status: 'Approved' }
       const cursor = classCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
     })
 
     //update the class status
-    app.patch('/class/checking/:id',  async (req, res) => {
+    app.patch('/class/checking/:id', async (req, res) => {
       const id = req.params.id;
       console.log(req.params.query);
       const filter = { _id: new ObjectId(id) };
@@ -151,9 +151,9 @@ async function run() {
       const result = await classCollection.updateOne(filter, updateDoc);
       res.send(result);
 
-    })  
+    })
 
-    app.patch('/class/deny/:id',  async (req, res) => {
+    app.patch('/class/deny/:id', async (req, res) => {
       const id = req.params.id;
       console.log(req.params.query);
       const filter = { _id: new ObjectId(id) };
@@ -166,16 +166,16 @@ async function run() {
       const result = await classCollection.updateOne(filter, updateDoc);
       res.send(result);
 
-    }) 
+    })
 
-    app.patch('/class/feedback/:id',  async (req, res) => {
+    app.patch('/class/feedback/:id', async (req, res) => {
       const id = req.params.id;
-     const body =  req.body;
-     const text = body.feedback;
-     
+      const body = req.body;
+      const text = body.feedback;
 
-     
-      
+
+
+
       const filter = { _id: new ObjectId(id) };
       const updateDoc = {
         $set: {
@@ -186,15 +186,15 @@ async function run() {
       const result = await classCollection.updateOne(filter, updateDoc);
       res.send(result);
 
-    }) 
+    })
 
 
 
 
-   
 
 
- 
+
+
 
 
 
@@ -228,7 +228,7 @@ async function run() {
       res.send(result);
     });
 
-    
+
 
 
     ////////////////dkfdkfj
@@ -237,207 +237,210 @@ async function run() {
       const query = { _id: new ObjectId(id) }
       const result = await cartsCollection.deleteOne(query);
       res.send(result);
-  })
+    })
 
 
 
 
 
-       //admin related
-       app.get('/users/admin/:email', verifyJWT, async (req, res) => {
-        const email = req.params.email;
-  
-        if (req.decoded.email !== email) {
-          res.send({ admin: false })
-        }
-  
-        const query = { email: email }
-        const user = await usersCollection.findOne(query);
-        const result = { admin: user?.role === 'Admin' }
-        res.send(result);
+    //admin related
+    app.get('/users/admin/:email', verifyJWT, async (req, res) => {
+      const email = req.params.email;
+
+      if (req.decoded.email !== email) {
+        res.send({ admin: false })
+      }
+
+      const query = { email: email }
+      const user = await usersCollection.findOne(query);
+      const result = { admin: user?.role === 'Admin' }
+      res.send(result);
+    })
+
+    //update the user role
+    app.patch('/users/admin/:id', async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          role: 'Admin',
+          isAdminClicked: true,
+        },
+      };
+
+      const result = await usersCollection.updateOne(filter, updateDoc);
+      res.send(result);
+
+    })
+
+    app.patch('/users/instructor/:id', async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          role: 'Instructor',
+          isInstClicked: true,
+        },
+      };
+
+      const result = await usersCollection.updateOne(filter, updateDoc);
+      res.send(result);
+
+    })
+
+    // app.patch('/users/adminClk/:id',  async (req, res) => {
+    //   const id = req.params.id;
+    //   console.log(id);
+    //   const filter = { _id: new ObjectId(id) };
+    //   const updateDoc = {
+    //     $set: {
+    //       isAdminClicked: false,
+    //     },
+    //   };
+
+    //   const result = await usersCollection.updateOne(filter, updateDoc);
+    //   res.send(result);
+
+    // }) 
+
+
+    // app.patch('/users/instClk/:id',  async (req, res) => {
+    //   const id = req.params.id;
+    //   console.log(id);
+    //   const filter = { _id: new ObjectId(id) };
+    //   const updateDoc = {
+    //     $set: {
+    //       isAdminClicked: true,
+    //     },
+    //   };
+
+    //   const result = await usersCollection.updateOne(filter, updateDoc);
+    //   res.send(result);
+
+    // })
+
+
+
+    app.get('/users/inst/:email', verifyJWT, async (req, res) => {
+      const email = req.params.email;
+
+      if (req.decoded.email !== email) {
+        res.send({ inst: false })
+      }
+
+      const query = { email: email }
+      const user = await usersCollection.findOne(query);
+      const result = { inst: user?.role === 'Instructor' }
+      res.send(result);
+    })
+
+
+    app.get('/users/student/:email', verifyJWT, async (req, res) => {
+      const email = req.params.email;
+
+      if (req.decoded.email !== email) {
+        res.send({ student: false })
+      }
+
+      const query = { email: email }
+      const user = await usersCollection.findOne(query);
+      const result = { student: user?.role === "Student" }
+
+
+      res.send(result);
+    })
+
+
+
+    // adding class by instructor
+    app.post('/addclass', verifyJWT, verifyInstructor, async (req, res) => {
+      const newClass = req.body;
+      const result = await classCollection.insertOne(newClass)
+      res.send(result);
+    })
+
+
+    app.get('/myclass', async (req, res) => {
+      let query = {};
+      if (req.query?.email) {
+        query = { email: req.query.email }
+      }
+      const cursor = classCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+
+    app.get('/mycart', verifyJWT, async (req, res) => {
+      let query = {};
+      if (req.query?.email) {
+        query = { studentEmail: req.query.email }
+      }
+      const cursor = cartsCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+
+
+
+
+
+
+    app.get('/instructors1', async (req, res) => {
+      let query = { role: 'Instructor' };
+
+      const cursor = usersCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    app.get('/reviews', async (req, res) => {
+      const cursor = reviewsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+
+
+    app.post('/create-payment-intent', verifyJWT, async (req, res) => {
+      const { price } = req.body;
+
+      const amount = price * 100;
+      console.log(amount);
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: 'usd',
+        payment_method_types: ['card']
+      });
+
+      res.send({
+        clientSecret: paymentIntent.client_secret
       })
-
-      //update the user role
-      app.patch('/users/admin/:id',  async (req, res) => {
-        const id = req.params.id;
-        console.log(id);
-        const filter = { _id: new ObjectId(id) };
-        const updateDoc = {
-          $set: {
-            role: 'Admin',
-            isAdminClicked: true,
-          },
-        };
-  
-        const result = await usersCollection.updateOne(filter, updateDoc);
-        res.send(result);
-  
-      })  
-
-      app.patch('/users/instructor/:id', async (req, res) => {
-        const id = req.params.id;
-        console.log(id);
-        const filter = { _id: new ObjectId(id) };
-        const updateDoc = {
-          $set: {
-            role: 'Instructor',
-            isInstClicked: true,
-          },
-        };
-  
-        const result = await usersCollection.updateOne(filter, updateDoc);
-        res.send(result);
-  
-      }) 
-
-      // app.patch('/users/adminClk/:id',  async (req, res) => {
-      //   const id = req.params.id;
-      //   console.log(id);
-      //   const filter = { _id: new ObjectId(id) };
-      //   const updateDoc = {
-      //     $set: {
-      //       isAdminClicked: false,
-      //     },
-      //   };
-  
-      //   const result = await usersCollection.updateOne(filter, updateDoc);
-      //   res.send(result);
-  
-      // }) 
+    })
 
 
-      // app.patch('/users/instClk/:id',  async (req, res) => {
-      //   const id = req.params.id;
-      //   console.log(id);
-      //   const filter = { _id: new ObjectId(id) };
-      //   const updateDoc = {
-      //     $set: {
-      //       isAdminClicked: true,
-      //     },
-      //   };
-  
-      //   const result = await usersCollection.updateOne(filter, updateDoc);
-      //   res.send(result);
-  
-      // })
+    app.post('/payments', verifyJWT, async(req, res) => {
+      const payment = req.body;
+      const result = await paymentCollection.insertOne(payment);
 
-
-
-      app.get('/users/inst/:email', verifyJWT, async (req, res) => {
-        const email = req.params.email;
-  
-        if (req.decoded.email !== email) {
-          res.send({ inst: false })
-        }
-  
-        const query = { email: email }
-        const user = await usersCollection.findOne(query);
-        const result = { inst: user?.role === 'Instructor' }
-        res.send(result);
-      })
-
-
-      app.get('/users/student/:email', verifyJWT, async (req, res) => {
-        const email = req.params.email;
-  
-        if (req.decoded.email !== email) {
-          res.send({ student: false })
-        }
-  
-        const query = { email: email }
-        const user = await usersCollection.findOne(query);
-        const result = { student: user?.role === "Student" }
-
-        
-        res.send(result);
-      })
-
-
-
-      // adding class by instructor
-      app.post('/addclass', verifyJWT, verifyInstructor, async (req, res) => {
-        const newClass = req.body;
-        const result = await classCollection.insertOne(newClass)
-        res.send(result);
-      })  
-
-
-      app.get('/myclass', async (req, res) => {
-        let query = {};
-        if (req.query?.email) {
-            query = { email: req.query.email }
-        }
-        const cursor = classCollection.find(query);
-        const result = await cursor.toArray();
-        res.send(result);
-      })
-
-
-      app.get('/mycart', verifyJWT, async (req, res) => {
-        let query = {};
-        if (req.query?.email) {
-            query = { studentEmail: req.query.email }
-        }
-        const cursor = cartsCollection.find(query);
-        const result = await cursor.toArray();
-        res.send(result);
-      })  
+      const query = {_id: {$in : payment.cartItems.map(id => new ObjectId(id))}}
+      const deleteResult = await cartsCollection.deleteMany(query);
+      const updateDoc = { $inc: { StudentCount: 1, seats: -1 } }
+      const updatequery = { _id: { $in: payment.classId.map(id => new ObjectId(id)) } };
+     const updatedResult = classCollection.updateMany(updatequery, updateDoc)
+      res.send({result, deleteResult, updatedResult});
+    })
 
 
 
 
-      
 
 
-      app.get('/instructors1', async(req, res) => {
-        let query = { role: 'Instructor' };
-
-        const cursor = usersCollection.find(query);
-        const result = await cursor.toArray();
-        res.send(result);
-      })
-
-      app.get('/reviews',    async (req, res) => {
-        const cursor = reviewsCollection.find();
-        const result = await cursor.toArray();
-        res.send(result);
-      }) 
-      
-      
-
-      app.post('/create-payment-intent', verifyJWT, async (req, res) => {
-        const { price } = req.body;
-        
-        const amount = price * 100;
-        console.log(amount);
-        const paymentIntent = await stripe.paymentIntents.create({
-          amount: amount,
-          currency: 'usd',
-          payment_method_types: ['card']
-        });
-  
-        res.send({
-          clientSecret: paymentIntent.client_secret
-        })
-      })
 
 
-      app.post('/payments', verifyJWT, async(req, res) => {
-        const payment = req.body;
-        const result = await paymentCollection.insertOne(payment);
-
-        const query = {_id: {$in : payment.cartItems.map(id => new ObjectId(id))}}
-        const deleteResult = await cartsCollection.deleteMany(query);
-        res.send({result, deleteResult});
-      })
-
-
-      
-
-
-     
-
- 
 
 
 
