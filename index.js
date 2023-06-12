@@ -55,6 +55,10 @@ async function run() {
     const classCollection = client.db('kitchenChamp').collection('class');
 
     const usersCollection = client.db('kitchenChamp').collection('users');
+    const cartsCollection = client.db('kitchenChamp').collection('carts');
+
+
+    
 
 
 
@@ -205,9 +209,29 @@ async function run() {
       res.send(result);
     });
 
+    //student api to add cart
+
+    app.post('/addcart', verifyJWT, async (req, res) => {
+      var cart = req.body;
+
+      const query = { classId: cart.classId, studentEmail: cart.studentEmail }
+      const existingCart = await cartsCollection.findOne(query);
+      if (existingCart) {
+        return res.send({ message: 'The class already added' })
+      }
+
+      const result = await cartsCollection.insertOne(cart);
+      res.send(result);
+    });
 
 
-
+    ////////////////dkfdkfj
+    app.delete('/carts/delete/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await cartsCollection.deleteOne(query);
+      res.send(result);
+  })
 
 
 
@@ -341,6 +365,17 @@ async function run() {
         const result = await cursor.toArray();
         res.send(result);
       })
+
+
+      app.get('/mycart', verifyJWT, async (req, res) => {
+        let query = {};
+        if (req.query?.email) {
+            query = { studentEmail: req.query.email }
+        }
+        const cursor = cartsCollection.find(query);
+        const result = await cursor.toArray();
+        res.send(result);
+      })  
 
 
 
