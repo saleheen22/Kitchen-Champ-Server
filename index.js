@@ -56,6 +56,7 @@ async function run() {
 
     const usersCollection = client.db('kitchenChamp').collection('users');
     const cartsCollection = client.db('kitchenChamp').collection('carts');
+    const reviewsCollection = client.db('kitchenChamp').collection('reviews');
 
 
     
@@ -224,6 +225,8 @@ async function run() {
       res.send(result);
     });
 
+    
+
 
     ////////////////dkfdkfj
     app.delete('/carts/delete/:id', async (req, res) => {
@@ -390,6 +393,12 @@ async function run() {
         const result = await cursor.toArray();
         res.send(result);
       })
+
+      app.get('/reviews',    async (req, res) => {
+        const cursor = reviewsCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+      })  
 
 
       
