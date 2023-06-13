@@ -384,6 +384,19 @@ async function run() {
     })
 
 
+    app.get('/myenrolledclass', verifyJWT, async (req, res) => {
+      let query = {};
+      if (req.query?.email) {
+        query = { email: req.query.email }
+      }
+      const cursor = paymentCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+
+
+
 
 
 
@@ -396,6 +409,17 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     })
+
+    app.get('/topinstructor', async (req, res) => {
+      let query = { role: 'Instructor' };
+
+      const cursor = usersCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+
+
 
     app.get('/reviews', async (req, res) => {
       const cursor = reviewsCollection.find();
@@ -423,17 +447,29 @@ async function run() {
 
 
     app.post('/payments', verifyJWT, async(req, res) => {
-      const payment = req.body;
-      const result = await paymentCollection.insertOne(payment);
-      const query = { _id: new ObjectId(payment.classId) }
-      const deleteResult = await cartsCollection.deleteOne(query);
-    //   const query = {_id: {$in : payment.cartItems.map(id => new ObjectId(id))}}
-    //   const deleteResult = await cartsCollection.deleteMany(query);
-    //   const updateDoc = { $inc: { StudentCount: 1, seats: -1 } }
-    //   const updatequery = { _id: { $in: payment.classId.map(id => new ObjectId(id)) } };
-    //  const updatedResult = classCollection.updateMany(updatequery, updateDoc)
-      res.send({result, deleteResult});
+      try {
+        const payment = req.body;
+        const result = await paymentCollection.insertOne(payment);
+        const query = { _id: new ObjectId(payment.cartId) };
+        const deleteResult = await cartsCollection.deleteOne(query);
+    
+        const updateDoc = { $inc: { StudentCount: 1, seats: -1 } };
+        const updateQuery = {_id: new ObjectId(payment.classId)}
+        const updatedResult = await classCollection.updateOne(updateQuery, updateDoc);
+    
+        res.send({ result, deleteResult, updatedResult });
+      } catch (error) {
+        console.error('Failed to process payment:', error);
+        res.status(500).send('Failed to process payment');
+      }
     })
+
+
+    app.get('/popularclass', async (req, res) => {
+      const cursor = classCollection.find().sort({ StudentCount: -1 }).limit(6);
+      const result = await cursor.toArray();
+      res.send(result);
+    })  
 
 
 
