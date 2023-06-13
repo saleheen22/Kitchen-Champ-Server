@@ -425,13 +425,14 @@ async function run() {
     app.post('/payments', verifyJWT, async(req, res) => {
       const payment = req.body;
       const result = await paymentCollection.insertOne(payment);
-
-      const query = {_id: {$in : payment.cartItems.map(id => new ObjectId(id))}}
-      const deleteResult = await cartsCollection.deleteMany(query);
-      const updateDoc = { $inc: { StudentCount: 1, seats: -1 } }
-      const updatequery = { _id: { $in: payment.classId.map(id => new ObjectId(id)) } };
-     const updatedResult = classCollection.updateMany(updatequery, updateDoc)
-      res.send({result, deleteResult, updatedResult});
+      const query = { _id: new ObjectId(payment.classId) }
+      const deleteResult = await cartsCollection.deleteOne(query);
+    //   const query = {_id: {$in : payment.cartItems.map(id => new ObjectId(id))}}
+    //   const deleteResult = await cartsCollection.deleteMany(query);
+    //   const updateDoc = { $inc: { StudentCount: 1, seats: -1 } }
+    //   const updatequery = { _id: { $in: payment.classId.map(id => new ObjectId(id)) } };
+    //  const updatedResult = classCollection.updateMany(updatequery, updateDoc)
+      res.send({result, deleteResult});
     })
 
 
